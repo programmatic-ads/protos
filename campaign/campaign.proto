@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+enum PromotedObjectType {
+  PROMOTED_OBJECT_TYPE_APP_ANDROID = 0; // ANDROID应用
+  PROMOTED_OBJECT_TYPE_APP_IOS = 1; // IOS应用
+  PROMOTED_OBJECT_TYPE_LINK = 2; // 网页
+}
+
+enum BudgetMode {
+  BUDGET_MODE_INFINITE = 0; // 不限
+  BUDGET_MODE_TOTAL = 1; // 总预算
+  BUDGET_MODE_DAY = 2; // 日预算
+}
+
+enum CampaignStatus {
+  CAMPAIGN_STUTAUS_DELETE = 0; // 删除
+  CAMPAIGN_STUTAUS_DELIVERY_OK = 1; // 正常投放中
+  CAMPAIGN_STUTAUS_CREATE = 2; // 新建
+  CAMPAIGN_STUTAUS_AUDIT = 3; // 审核
+  CAMPAIGN_STUTAUS_AUDIT_DENY = 4; // 审核不通过
+  CAMPAIGN_STUTAUS_NOT_START = 5;  // 未到投放时间
+  CAMPAIGN_STUTAUS_BUDGET_EXCEED = 6; // 超预算
+  CAMPAIGN_STUTAUS_ADVERTISER_BUDGET_EXCEED = 7; // 账号超预算
+  CAMPAIGN_STUTAUS_BALANCE_EXCEED = 8; // 账号余额不足
+  CAMPAIGN_STUTAUS_DONE = 9; // 完成
+  
+}
+
+enum CampaignConfigStatus {
+  CAMPAIGN_CONFIG_STATUS_DELETE = 0; // 删除
+  CAMPAIGN_CONFIG_STATUS_ENABLE = 1; // 正常
+  CAMPAIGN_CONFIG_STATUS_DISABLE = 2; // 暂停
+}
+
+message OperateData {
+  uint64 campaign_id = 1;
+}
+
+message AddRequest {
+  uint64 advertiser_id = 1;
+  string campaign_name = 2;
+  PromotedObjectType promoted_object_type = 3;
+  BudgetMode budget_mode = 4;
+  uint64 budget = 5;
+}
+
+message AddResponse {
+  uint64 code = 1;
+  string message = 2;
+  OperateData data = 3;
+}
+
+message UpdateRequest {
+  uint64 advertiser_id = 1;
+  uint64 campaign_id = 2;
+  string campaign_name = 3;
+  BudgetMode budget_mode = 4;
+  uint64 budget = 5;
+}
+
+message UpdateResponse {
+  uint64 code = 1;
+  string message = 2;
+  OperateData data = 3;
+}
+
+message GetRequestFiltering {
+
+}
+
+message GetRequest {
+  uint64 advertiser_id = 1;
+  GetRequestFiltering filtering = 2;
+  uint64 page = 3;
+  uint64 page_size = 4;
+}
+
+message GetResponse {
+
+}
+
+message UpdateStatusRequest {
+  int32 advertiser_id = 1;
+  int32 campaign_id = 2;
+  CampaignConfigStatus config_status = 3;
+}
+
+message UpdateStatusResponse {
+  uint64 code = 1;
+  string message = 2;
+  OperateData data = 3;
+}
+
+service CampaignService {
+  rpc Add(AddRequest) returns (AddResponse) {}
+  rpc Update(UpdateRequest) returns (UpdateResponse) {}
+  rpc Get(GetRequest) returns (GetResponse) {}
+  rpc UpdateStatus(UpdateStatusRequest) returns (UpdateStatusResponse) {}
+}
